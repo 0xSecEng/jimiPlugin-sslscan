@@ -1,0 +1,224 @@
+{% extends "lightThemebase.html" %}
+
+{% block stylesheet %}
+<style>
+    p.thicker {
+  font-weight: 900;
+}
+
+p.thick {
+  font-weight: bold;
+}
+
+</style>
+{% endblock %}
+
+
+{% block content %}  
+
+<div class="container">
+
+    <!-- Revokation Status with Logos -->
+    <div class="row ">
+
+        <div class="col-sm-4 mt-4 mb-3">
+            
+            <div class="card text-center shadow-lg rounded">
+                <div class="card-header">
+                    <h5 class="card-title">Revokation Status</h5>
+                </div>
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="th-sm">SSL Body</th> 
+                            <th class="th-sm">Status </th>                 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td> Valid  </td>
+                            <td> <i class="fa {{ tableResults['revocationStatus'] }}"></i></td>
+                        </tr>
+                        <tr>
+                            <td> OSCP </td>
+                            <td> <i class="fa {{ tableResults['ocsptatus'] }}"></i></td>
+                        </tr>
+                        <tr>
+                            <td> CRL </td>
+                            <td> <i class="fa {{ tableResults['crlStatus'] }}"></i></td>
+                        </tr>                        
+
+                    </tbody>
+                </table>
+            </div>
+        </div> <!-- End Column-->        
+
+        <!-- SSL Score -->
+        <div class="col-sm-4 mt-4 mb-3 ">
+            
+            <div class="card text-center shadow-lg rounded">
+                <div class="card-header">
+                    <h5 class="card-title">SSL Score</h5>
+                </div>
+                <font size="+40"> <p class="thicker">{{ tableResults["sslScore"] }}</p> </font>
+            </div>
+        </div> <!-- End Column-->
+
+        <!--  -->
+        <div class="col-sm-4 mt-4 mb-3">
+            
+            <div class="card text-center shadow-lg rounded">
+                <div class="card-header">
+                    <h5 class="card-title">Cert Details WIP</h5>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="th-sm">Item</th> 
+                            <th class="th-sm">Result </th>                 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td> Comman Name  </td>
+                            <td> {{ commonNames }}  </td>
+                        </tr>
+                        <tr>
+                            <td> Alt Name </td>
+                            <td>  {{ altNames }} </td>
+                        </tr>                   
+
+                    </tbody>
+                </table>
+            </div>
+        </div> <!-- End Column-->
+
+    </div> <!-- end row-->
+ 
+
+
+    <div class="row ">
+
+        <div class="col-xl-12 mt-3 mb-3">
+            <div class="card bg-info text-white shadow-lg rounded">
+                <div class="card-header">
+                    <h5 class="card-title"> Key Info</h5>
+                </div> <!-- Card Header-->
+
+                <table class="table text-white">
+                    <thead>
+                        <tr>
+                            <th class="th-sm">Key Algorithm</th>
+                            <th class="th-sm">Key Strength</th>                     
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ tableResults["keyAlgorithm"] }}</td>
+                            <td>{{ tableResults["keyStrength"] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> <!-- End Key Strength -->
+        </div> <!-- End Column-->
+
+    </div> <!-- end row-->
+
+    <div class="row ">
+        <div class="col-xl-12 mt-1 "> <!-- Cert Summary -->        
+            <div class="card shadow-lg rounded">
+                <div class="card-header">
+                    <h5 class="card-title"><i class="fa  fa fa-newspaper-o" aria-hidden="true"></i> Summary</h5>
+                </div> <!-- End header-->
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="th-sm">Hostname</th>
+                            <th class="th-sm">IP</th>
+                            <th class="th-sm">valid From</th>
+                            <th class="th-sm">Cert Expirary Date</th>
+                            <th class="th-sm">Server Signature</th>                        
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ tableResults["host"] }}</td>
+                            <td>{{ tableResults["IP"] }}</td>
+                            <td>{{ tableResults["validFrom"] }} </td>  
+                            <td>{{ tableResults["validUntil"] }} </td> 
+                            <td>{{ tableResults["serverSignature"] }} </td>  
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div> <!-- End Column-->
+    </div> <!-- end row-->
+
+    <div class="row">
+        <div class="col-xl-12 mt-5">
+        
+            <div class="card shadow-lg rounded">
+                <div class="card-header">
+                    <h5 class="card-title"> Vulnerable Cipers </h5>
+                </div> <!-- End header-->
+
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <th> Vulnerability </th>
+                        <th> Is Vulnerable True</th>
+                    </thead>
+                    <tbody>
+                        {% for key, value in vulnerableCiphers.items() %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div> <!-- End Column-->
+    </div> <!-- end row-->
+
+    <div class="row">
+        <div class="col-xl-12 mt-5">
+        
+            <div class="card shadow-lg rounded">
+                <div class="card-header">
+                    <h5 class="card-title"> Supported Ciphers? </h5>
+                    <h6 class="card-subtitle text-muted">Blah <code>Nice formatting i'll use this somewhere</code> </h6>
+                </div> <!-- End header-->
+
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <th> Blah </th>
+                        <th>Blash 2</th>
+                    </thead>
+                    <tbody>
+                        <td>Data 1</td>
+                        <td>Data 2</td>
+                    </tbody>
+                </table>
+            </div>
+        </div> <!-- End Column-->
+    </div> <!-- end row-->
+
+</div> <!-- end of container-->
+{% endblock %}
+
+
+{% block scripts %}
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+
+<script>
+// Tables
+    $(document).ready(function() {
+        $('#sslTable').DataTable();
+    } );
+</script>
+
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends "lightThemebase.html" %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+{% endblock %}
+
+
+{% block headstylesheet %}  
+<style>
+body {
+    background-color: white;
+}
+</style>
+{% endblock %}
+
+{% block content %}  
+
+
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-sm mt-4 mb-5 ">
+          
+            <div class="card shadow-lg rounded">
+                <div class="card-header">
+                    <h5 class="card-title">Certificate Expiry Chart</h5>
+                </div>
+                <div class="card-body">
+                  <canvas id="doughnut-chart"></canvas>
+                </div>
+            </div>
+        </div> <!-- End Column-->
+
+        <div class="col-sm mt-4 mb-5">
+          
+            <div class="card bg-dark text-white shadow-lg rounded">
+                <div class="card-header">
+                    <h5 class="card-title">Certificates Expiring Soon</h5>
+                </div>
+
+                <div class="card-body">                
+                    <tbody>
+                        {% for value in expringSoonList %}
+                            <tr>
+                                <td><a href='scan/?scanName={{ value |urlencode }}'><p class="card-text"> {{ value }} </p></a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                </div>
+
+            </div>
+        </div> <!-- End Column-->
+
+        <div class="col-sm  mt-4 mb-5">
+          
+            <div class="card bg-light shadow-lg rounded">
+                <div class="card-header">
+                    <h5 class="card-title">Supported SSL Versions All Sites</h5>
+                </div>
+                <div class="card-body">                 
+                    <table class="table">
+                        <tbody>
+                                <tr> 
+                                    <td> SSLV2 : </td>
+                                    <td>{{ supportedSSLVersions["SSLV2"] }}</td>
+                                </tr>
+                                <tr> 
+                                    <td> SSLV3 : </td>
+                                    <td>{{ supportedSSLVersions["SSLV3"] }}</td>
+                                </tr>   
+
+                                <tr> 
+                                    <td> TLS 1.0 : </td>
+                                    <td>{{ supportedSSLVersions["TLS1_0"] }}</td>
+                                </tr>
+                                <tr> 
+                                    <td> TLS 1.1 : </td>
+                                    <td>{{ supportedSSLVersions["TLS1_1"] }}</td>
+                                </tr>          
+                                <tr> 
+                                    <td> TLS 1.2 : </td>
+                                    <td>{{ supportedSSLVersions["TLS1_2"] }}</td>
+                                </tr>  
+                                <tr> 
+                                    <td> TLS 1.3 : </td>
+                                    <td>{{ supportedSSLVersions["TLS1_3"] }}</td>
+                                </tr>                                                             
+                            </tbody>
+                        </table>
+                </div>
+            </div>
+        </div> <!-- End Column-->
+
+    </div> <!-- End of row-->
+
+
+
+    <div class="row ">
+        <div class="col-xl-12 mt-5">
+            <div class="card shadow-lg rounded">
+                <div class="card-header">
+                    <h5 class="card-title"> Summary <i class="fa  fa fa-newspaper-o" aria-hidden="true"></i></h5>
+                </div> <!-- End header-->
+                <div class="card-body">
+                
+                    <table id="sslTable" class="table table-striped table-bordered">
+                        <tr>
+                            <th class="th-sm">Hostname</th>
+                            <th class="th-sm">IP</th>
+                            <th class="th-sm">Cert Score</th>
+                            <th class="th-sm">Cert Expirary Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for value in tableResults %}
+                            <tr>
+                                <td><a href='scan/?scanName={{ value["host"]|urlencode }}'>{{ value["host"] }}</a></td>
+                                <td>{{ value["IP"] }}</td>
+                                <td>{{ value["sslScore"] }}</td>
+                                <td>{{ value["validUntil"] }} 
+                                </td> 
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+    
+                </div> <!-- end of card body (with table)-->
+            </div> <!-- end of card-->
+        </div> <!-- End of Column -->
+  </div> <!-- end of tow-->
+
+
+
+</div> <!-- end of container-->
+{% endblock %}
+
+
+{% block scripts %}
+
+
+
+<script>
+    //PieChart
+       
+    var threeMonths = {{ sslPieChart["threeMonths"]  }};
+    var sixMonths   = {{ sslPieChart["sixMonths"]  }};
+    var oneYear     = {{ sslPieChart["oneYear"]   }};
+    console.log(oneYear,sixMonths,threeMonths)
+
+    var chartLabels       = ["Expiring in 3 months", "Expiring in 6 months", "Expiring in < 1 year"]
+    var pieChartData = [threeMonths,sixMonths,oneYear]
+    var pieTitle     = ""
+    var ChartColours = ["rgba(255, 99, 97, 0.6)","rgba(255, 166, 0, 0.6)", "rgba(7, 206, 50, 0.6)"]               
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script src="{{ url_for('sslPages.static', filename='js/sslpieChart.js') }}"></script>
+
+<script>
+// Tables
+    $(document).ready(function() {
+        $('#sslTable').DataTable();
+    } );
+</script>
+
+{% endblock %}
+
